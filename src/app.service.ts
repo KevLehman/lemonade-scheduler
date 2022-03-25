@@ -125,6 +125,8 @@ export class AppService {
   ): Promise<AgendaJobDocument & { timeLeft: number }> {
     const job = await this.agendaJobModel.findOne({ name: jobId });
 
+    if (!job) return null;
+
     return Object.assign(job, { timeLeft: this.getTimeLeft(job) });
   }
 }
