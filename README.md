@@ -46,10 +46,11 @@
 
 ```bash
 $ npm install
+$ cp .env.example .env
 ```
 
 - You need a running mongodb server either on your machine or hosted. For dev, we used MongoDB Atlas free tier
-
+- Remember to edit your .env with a valid mongodb address :)
 ## Running the app
 
 ```bash
