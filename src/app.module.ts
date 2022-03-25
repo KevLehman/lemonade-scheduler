@@ -12,6 +12,7 @@ import { AgendaJob, AgendaJobSchema } from './agenda/agenda.model';
   imports: [
     JoiPipeModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    // Assumption: all job calls should be handled in less than 5secs
     HttpModule.register({
       timeout: 5000,
       timeoutErrorMessage: 'Cannot process your request right now',

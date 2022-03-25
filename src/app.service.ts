@@ -22,9 +22,9 @@ export class AppService {
     private agendaJobModel: Model<AgendaJobDocument>,
     private config: ConfigService,
   ) {
-    this.agenda.processEvery('10 seconds');
     this.agenda.defaultLockLifetime(5000);
 
+    // App is always in "production" mode. "dev" mode is for testing (as jest puts NODE_ENV=dev instead of test)
     if (this.config.get('NODE_ENV') === 'prod') {
       this.reschedule().then(() =>
         this.logger.log('All jobs rescheduled successfully'),
@@ -47,6 +47,8 @@ export class AppService {
       })
       .exec();
 
+    // Assumption: previous jobs should be run at the time they were scheduled for
+    // If a job should've been run when server was stopped, this will cause it to run inmediately
     for await (const job of jobs) {
       // Cancel, just in case
       await this.agenda.cancel({ name: job.name });
@@ -66,15 +68,20 @@ export class AppService {
     },
   }: Job<TimerJob>): void {
     this.logger.log(`Executing job with ID ${name}`);
+
+    // Assumption: endpoint called will exists for the path given
+    // Otherwise, this will always return 404
     const httpCall = this.httpService.post(
       `${url.endsWith('/') ? url.replace(/\/$/, '') : url}/${name}`,
     );
 
     lastValueFrom(httpCall)
       .then((response) => {
+        // Assumption: we do not care about what the server responds, just if it responds or not
         this.logger.log(`Server responded with status code ${response.status}`);
       })
       .catch((response) => {
+        // Assumption: if job fails we don't need to retry
         this.logger.error(
           `Something happened. Server response was ${response}`,
         );
@@ -83,6 +90,8 @@ export class AppService {
 
   async setTimer({ hours, minutes, seconds, url }: TimerDto): Promise<Timer> {
     this.logger.log(`Scheduling new job for url ${url}`);
+
+    // Assumption: counterId is a job identificator. Using UUIDs serves the same purpose
     const jobName = uuidv4();
     const when = add(new Date(), {
       ...(hours && { hours }),

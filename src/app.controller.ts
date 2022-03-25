@@ -35,6 +35,7 @@ export class AppController {
       throw new NotFoundException('A job with a matching ID was not found');
     }
 
+    // Assumption: returning extra props is not bad :)
     return {
       id: job.name,
       url: job.data.url as string,

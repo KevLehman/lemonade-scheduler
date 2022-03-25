@@ -1,5 +1,5 @@
 // This is a copy of agenda's types. Given that nestjs-agenda doesn't expose the types I had to create mocks for them
-// Installing agenda with its types created a conflict with the agenda that was inside nestjs-agenda
+// Installing agenda with its types created a conflict with the agenda that was inside nestjs-agenda so that solution was ignored
 
 export interface JobAttributesData {
   [key: string]: any;

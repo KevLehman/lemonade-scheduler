@@ -15,10 +15,3 @@ export interface Timer {
 export interface TimerJob {
   url: string;
 }
-
-export interface StoredJob {
-  _id: string;
-  name: string;
-  data: { [k: string]: unknown };
-  nextRunAt: Date;
-}
